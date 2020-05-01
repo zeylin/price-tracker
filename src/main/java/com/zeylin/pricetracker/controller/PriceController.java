@@ -1,5 +1,8 @@
 package com.zeylin.pricetracker.controller;
 
+import com.zeylin.pricetracker.dto.AddPriceRequest;
+import com.zeylin.pricetracker.dto.PriceDto;
+import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.service.PriceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,9 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/prices")
@@ -23,8 +29,8 @@ public class PriceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void add() {
-        priceService.add();
+    public PriceDto add(@RequestBody AddPriceRequest request) {
+        return priceService.add(request);
     }
 
     @PutMapping
@@ -33,13 +39,13 @@ public class PriceController {
     }
 
     @GetMapping(value = "/{id}")
-    public void load(@PathVariable Integer id) {
-        priceService.load();
+    public PriceDto load(@PathVariable Integer id) {
+        return priceService.load(id);
     }
 
     @GetMapping
-    public void list() {
-        priceService.list();
+    public List<PriceListDto> list() {
+        return priceService.list();
     }
 
     @PostMapping(value = "/filtered")
