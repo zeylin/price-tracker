@@ -38,7 +38,6 @@ public class PriceServiceImpl implements PriceService {
         }
 
         Integer id = priceDAO.addPrice(request);
-
         return priceDAO.loadPrice(id);
     }
 
