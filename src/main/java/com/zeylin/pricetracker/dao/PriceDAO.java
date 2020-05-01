@@ -7,6 +7,7 @@ import com.zeylin.pricetracker.db.tables.Price;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
+import com.zeylin.pricetracker.exceptions.NotFoundException;
 import com.zeylin.pricetracker.utils.PriceConverter;
 import org.jooq.DSLContext;
 import org.jooq.Record6;
@@ -110,6 +111,10 @@ public class PriceDAO {
                 .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
                 .where(p.ID.eq(id))
                 .fetchOne();
+
+        if (record == null) {
+            throw new NotFoundException("Price could not be found with id: " + id);
+        }
 
         PriceDto priceDto = record.map(r -> PriceConverter.convertToPriceDto(p, i, l, r));
 

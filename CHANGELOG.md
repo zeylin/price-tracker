@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.6.0-SNAPSHOT] - 2020-05-02
+### Added
+- NotFoundException
+- Controller advice
+
 ## [1.5.0-SNAPSHOT] - 2020-05-01
 ### Added
 - Adding and viewing a price entry
