@@ -4,6 +4,7 @@ import com.zeylin.pricetracker.dao.PriceDAO;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
+import com.zeylin.pricetracker.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,15 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public PriceDto add(AddPriceRequest request) {
+
+        if (request.getItemId() == null && request.getItemName() == null) {
+            throw new InvalidArgumentException("Item ID cannot be null when item name is null");
+        }
+
+        if (request.getLocationId() == null && request.getLocationName() == null) {
+            throw new InvalidArgumentException("Location ID cannot be null when location name is null");
+        }
+
         if (request.getItemId() == null && request.getItemName() != null) {
             LOGGER.info("Adding new item: {}", request.getItemName());
 
