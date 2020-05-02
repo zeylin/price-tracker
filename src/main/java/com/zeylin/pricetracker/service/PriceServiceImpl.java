@@ -4,6 +4,7 @@ import com.zeylin.pricetracker.dao.PriceDAO;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
+import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,35 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public void update() {
+    public void update(UpdatePriceRequest request) {
+
+        if (request.getId() == null) {
+            throw new InvalidArgumentException("ID cannot be null");
+        }
+
+        if (request.getItemId() == null && request.getItemName() == null) {
+            throw new InvalidArgumentException("Item ID cannot be null when item name is null");
+        }
+
+        if (request.getLocationId() == null && request.getLocationName() == null) {
+            throw new InvalidArgumentException("Location ID cannot be null when location name is null");
+        }
+
+        if (request.getItemId() == null && request.getItemName() != null) {
+            LOGGER.info("Adding new item: {}", request.getItemName());
+
+            Integer itemId = priceDAO.saveItem(request.getItemName());
+            request.setItemId(itemId);
+        }
+
+        if (request.getLocationId() == null && request.getLocationName() != null) {
+            LOGGER.info("Adding new location: {}", request.getLocationName());
+
+            Integer locationId = priceDAO.saveLocation(request.getLocationName(), request.getCityId());
+            request.setLocationId(locationId);
+        }
+
+        priceDAO.updatePrice(request);
 
     }
 
