@@ -7,6 +7,7 @@ import com.zeylin.pricetracker.db.tables.Price;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
+import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.NotFoundException;
 import com.zeylin.pricetracker.utils.PriceConverter;
 import org.jooq.DSLContext;
@@ -140,6 +141,25 @@ public class PriceDAO {
         List<PriceListDto> list = records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
 
         return list;
+    }
+
+    /**
+     * Update price.
+     * @param request request containing price info
+     */
+    public void updatePrice(UpdatePriceRequest request) {
+        Price p = Price.PRICE;
+
+        LocalDateTime now = LocalDateTime.now();
+
+        dslContext.update(p)
+                .set(p.ITEM_ID, request.getItemId())
+                .set(p.AMOUNT, request.getAmount())
+                .set(p.DATE, request.getDate())
+                .set(p.LOCATION_ID, request.getLocationId())
+                .set(p.UPDATE_DATE, now)
+                .where(p.ID.eq(request.getId()))
+                .execute();
     }
 
 }
