@@ -108,9 +108,9 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public void delete(Integer id) {
-        Integer deleteCount = priceDAO.delete(id);
+        Integer archiveCount = priceDAO.archive(id);
 
-        if (deleteCount == 0) {
+        if (archiveCount == 0) {
             throw new NotFoundException("Price could not be found with id: " + id);
         }
     }
@@ -121,8 +121,12 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public void deletePermanently() {
+    public void deletePermanently(Integer id) {
+        int deleteCount = priceDAO.deletePermanently(id);
 
+        if (deleteCount == 0) {
+            throw new NotFoundException("Price could not be found with id: " + id);
+        }
     }
 
     @Override
