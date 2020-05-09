@@ -15,8 +15,8 @@ public interface PriceService {
     public List<PriceListDto> list();
     public void search();
     public void listPriceDynamics();
-    public void delete();
-    public void listRecentlyDeleted();
+    public void delete(Integer id);
+    public List<PriceListDto> listDeleted();
     public void deletePermanently();
 
 }

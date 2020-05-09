@@ -10,10 +10,7 @@ import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.NotFoundException;
 import com.zeylin.pricetracker.utils.PriceConverter;
-import org.jooq.DSLContext;
-import org.jooq.Record6;
-import org.jooq.Record7;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
 
@@ -106,7 +103,8 @@ public class PriceDAO {
         Item i = Item.ITEM;
         Location l = Location.LOCATION;
 
-        Record7<Integer, Integer, String, Integer, LocalDate, Integer, String> record = dslContext.select(p.ID, p.ITEM_ID, i.NAME, p.AMOUNT, p.DATE, p.LOCATION_ID, l.NAME)
+        Record8<Integer, Integer, String, Integer, LocalDate, Integer, String, Boolean> record = dslContext
+                .select(p.ID, p.ITEM_ID, i.NAME, p.AMOUNT, p.DATE, p.LOCATION_ID, l.NAME, p.IS_DELETED)
                 .from(p)
                 .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
                 .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
@@ -117,13 +115,11 @@ public class PriceDAO {
             throw new NotFoundException("Price could not be found with id: " + id);
         }
 
-        PriceDto priceDto = record.map(r -> PriceConverter.convertToPriceDto(p, i, l, r));
-
-        return priceDto;
+        return record.map(r -> PriceConverter.convertToPriceDto(p, i, l, r));
     }
 
     /**
-     * List all prices.
+     * List all non-deleted prices.
      * @return a list of prices
      */
     public List<PriceListDto> list() {
@@ -135,12 +131,11 @@ public class PriceDAO {
                 .from(p)
                 .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
                 .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
+                .where(p.IS_DELETED.isFalse())
                 .orderBy(p.ID.desc())
                 .fetch();
 
-        List<PriceListDto> list = records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
-
-        return list;
+        return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
     }
 
     /**
@@ -158,8 +153,44 @@ public class PriceDAO {
                 .set(p.DATE, request.getDate())
                 .set(p.LOCATION_ID, request.getLocationId())
                 .set(p.UPDATE_DATE, now)
-                .where(p.ID.eq(request.getId()))
+                .where(p.ID.eq(request.getId())).and(p.IS_DELETED.isFalse())
                 .execute();
+    }
+
+    /**
+     * Delete a price by ID by setting its deleted flag to true.
+     * @param id ID of the price to be deleted
+     */
+    public Integer delete(Integer id) {
+        Price p = Price.PRICE;
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return dslContext.update(p)
+                .set(p.IS_DELETED, true)
+                .set(p.UPDATE_DATE, now)
+                .where(p.ID.eq(id))
+                .execute();
+    }
+
+    /**
+     * List deleted prices.
+     * @return a list of deleted prices
+     */
+    public List<PriceListDto> listDeleted() {
+        Price p = Price.PRICE;
+        Item i = Item.ITEM;
+        Location l = Location.LOCATION;
+
+        Result<Record6<Integer, Integer, String, Integer, LocalDate, String>> records = dslContext.select(p.ID, p.ITEM_ID, i.NAME, p.AMOUNT, p.DATE, l.NAME)
+                .from(p)
+                .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
+                .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
+                .where(p.IS_DELETED.isTrue())
+                .orderBy(p.ID.desc())
+                .fetch();
+
+        return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
     }
 
 }

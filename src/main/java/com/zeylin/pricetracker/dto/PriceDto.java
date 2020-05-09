@@ -16,5 +16,6 @@ public class PriceDto {
     private Integer locationId;
     private String locationName;
     private LocalDate date;
+    private Boolean isDeleted;
 
 }

@@ -18,6 +18,7 @@ public class PriceConverter {
         dto.setDate(p.DATE.get(r));
         dto.setLocationId(p.LOCATION_ID.get(r));
         dto.setLocationName(l.NAME.get(r));
+        dto.setIsDeleted(p.IS_DELETED.get(r));
         return dto;
     }
 

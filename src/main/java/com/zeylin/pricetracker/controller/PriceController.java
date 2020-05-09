@@ -61,12 +61,12 @@ public class PriceController {
 
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable Integer id) {
-        priceService.delete();
+        priceService.delete(id);
     }
 
     @GetMapping(value = "/deleted")
-    public void listRecentlyDeleted() {
-        priceService.listRecentlyDeleted();
+    public List<PriceListDto> listDeleted() {
+        return priceService.listDeleted();
     }
 
     @DeleteMapping(value = "/deleted/{id}")
