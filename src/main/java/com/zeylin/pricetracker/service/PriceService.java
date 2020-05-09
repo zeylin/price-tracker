@@ -17,7 +17,7 @@ public interface PriceService {
     public void listPriceDynamics();
     public void delete(Integer id);
     public List<PriceListDto> listDeleted();
-    public void deletePermanently();
+    public void deletePermanently(Integer id);
     public void restore(Integer id);
 
 }

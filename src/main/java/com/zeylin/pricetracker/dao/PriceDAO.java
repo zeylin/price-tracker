@@ -158,11 +158,11 @@ public class PriceDAO {
     }
 
     /**
-     * Delete a price by ID by setting its deleted flag to true.
-     * @param id ID of the price to be deleted
-     * @return the number of deleted records
+     * Archive a price entry by setting its deleted flag to true.
+     * @param id ID of the price to be archived
+     * @return the number of updated records
      */
-    public Integer delete(Integer id) {
+    public Integer archive(Integer id) {
         Price p = Price.PRICE;
 
         LocalDateTime now = LocalDateTime.now();
@@ -207,6 +207,19 @@ public class PriceDAO {
         return dslContext.update(p)
                 .set(p.IS_DELETED, false)
                 .set(p.UPDATE_DATE, now)
+                .where(p.ID.eq(id))
+                .execute();
+    }
+
+    /**
+     * Permanently delete a price entry.
+     * @param id ID of the price to be deleted
+     * @return the number of deleted records
+     */
+    public int deletePermanently(Integer id) {
+        Price p = Price.PRICE;
+
+        return dslContext.delete(p)
                 .where(p.ID.eq(id))
                 .execute();
     }

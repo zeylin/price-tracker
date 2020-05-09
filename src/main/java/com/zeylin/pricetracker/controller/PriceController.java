@@ -71,7 +71,7 @@ public class PriceController {
 
     @DeleteMapping(value = "/deleted/{id}")
     public void deletePermanently(@PathVariable Integer id) {
-        priceService.deletePermanently();
+        priceService.deletePermanently(id);
     }
 
     @PutMapping(value = "/restore/{id}")
