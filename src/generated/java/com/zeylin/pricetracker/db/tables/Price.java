@@ -17,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Price extends TableImpl<PriceRecord> {
 
-    private static final long serialVersionUID = 1210568605;
+    private static final long serialVersionUID = 609907138;
 
     /**
      * The reference instance of <code>public.price</code>
@@ -82,6 +82,11 @@ public class Price extends TableImpl<PriceRecord> {
      * The column <code>public.price.update_date</code>.
      */
     public final TableField<PriceRecord, LocalDateTime> UPDATE_DATE = createField(DSL.name("update_date"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+
+    /**
+     * The column <code>public.price.is_deleted</code>.
+     */
+    public final TableField<PriceRecord, Boolean> IS_DELETED = createField(DSL.name("is_deleted"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.price</code> table reference
@@ -171,11 +176,11 @@ public class Price extends TableImpl<PriceRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, Integer, Integer, LocalDate, Integer, LocalDateTime, LocalDateTime> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, Integer, Integer, LocalDate, Integer, LocalDateTime, LocalDateTime, Boolean> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

@@ -6,6 +6,7 @@ import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.InvalidArgumentException;
+import com.zeylin.pricetracker.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -106,13 +107,17 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public void delete() {
+    public void delete(Integer id) {
+        Integer deleteCount = priceDAO.delete(id);
 
+        if (deleteCount == 0) {
+            throw new NotFoundException("Price could not be found with id: " + id);
+        }
     }
 
     @Override
-    public void listRecentlyDeleted() {
-
+    public List<PriceListDto> listDeleted() {
+        return priceDAO.listDeleted();
     }
 
     @Override
