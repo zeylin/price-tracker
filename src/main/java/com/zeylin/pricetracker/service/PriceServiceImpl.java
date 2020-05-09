@@ -125,4 +125,13 @@ public class PriceServiceImpl implements PriceService {
 
     }
 
+    @Override
+    public void restore(Integer id) {
+        int restoreCount = priceDAO.restore(id);
+
+        if (restoreCount == 0) {
+            throw new NotFoundException("Price could not be found with id: " + id);
+        }
+    }
+
 }

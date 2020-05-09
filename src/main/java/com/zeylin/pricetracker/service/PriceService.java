@@ -18,5 +18,6 @@ public interface PriceService {
     public void delete(Integer id);
     public List<PriceListDto> listDeleted();
     public void deletePermanently();
+    public void restore(Integer id);
 
 }
