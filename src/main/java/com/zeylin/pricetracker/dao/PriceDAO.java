@@ -160,6 +160,7 @@ public class PriceDAO {
     /**
      * Delete a price by ID by setting its deleted flag to true.
      * @param id ID of the price to be deleted
+     * @return the number of deleted records
      */
     public Integer delete(Integer id) {
         Price p = Price.PRICE;
@@ -191,6 +192,23 @@ public class PriceDAO {
                 .fetch();
 
         return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
+    }
+
+    /**
+     * Restore a price entry by removing it from deleted prices.
+     * @param id ID of the price to be restored
+     * @return the number of updated records
+     */
+    public int restore(Integer id) {
+        Price p = Price.PRICE;
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return dslContext.update(p)
+                .set(p.IS_DELETED, false)
+                .set(p.UPDATE_DATE, now)
+                .where(p.ID.eq(id))
+                .execute();
     }
 
 }

@@ -74,4 +74,9 @@ public class PriceController {
         priceService.deletePermanently();
     }
 
+    @PutMapping(value = "/restore/{id}")
+    public void restore(@PathVariable Integer id) {
+        priceService.restore(id);
+    }
+
 }
