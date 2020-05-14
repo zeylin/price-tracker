@@ -3,6 +3,7 @@ package com.zeylin.pricetracker.service;
 import com.zeylin.pricetracker.dao.PriceDAO;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
+import com.zeylin.pricetracker.dto.PriceFilterRequest;
 import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.InvalidArgumentException;
@@ -97,8 +98,9 @@ public class PriceServiceImpl implements PriceService {
     }
 
     @Override
-    public void search() {
-
+    public List<PriceListDto> search(PriceFilterRequest request) {
+        List<PriceListDto> list = priceDAO.search(request);
+        return list;
     }
 
     @Override

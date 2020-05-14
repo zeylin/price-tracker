@@ -4,10 +4,7 @@ import com.zeylin.pricetracker.db.Sequences;
 import com.zeylin.pricetracker.db.tables.Item;
 import com.zeylin.pricetracker.db.tables.Location;
 import com.zeylin.pricetracker.db.tables.Price;
-import com.zeylin.pricetracker.dto.AddPriceRequest;
-import com.zeylin.pricetracker.dto.PriceDto;
-import com.zeylin.pricetracker.dto.PriceListDto;
-import com.zeylin.pricetracker.dto.UpdatePriceRequest;
+import com.zeylin.pricetracker.dto.*;
 import com.zeylin.pricetracker.exceptions.NotFoundException;
 import com.zeylin.pricetracker.utils.PriceConverter;
 import org.jooq.*;
@@ -222,6 +219,40 @@ public class PriceDAO {
         return dslContext.delete(p)
                 .where(p.ID.eq(id))
                 .execute();
+    }
+
+    /**
+     * Search prices according to filters.
+     * @param request filter values
+     * @return found price entries, if any
+     */
+    public List<PriceListDto> search(PriceFilterRequest request) {
+        Price p = Price.PRICE;
+        Item i = Item.ITEM;
+        Location l = Location.LOCATION;
+
+        SelectConditionStep<Record6<Integer, Integer, String, Integer, LocalDate, String>> step = dslContext.select(p.ID, p.ITEM_ID, i.NAME, p.AMOUNT, p.DATE, l.NAME)
+                .from(p)
+                .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
+                .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
+                .where(p.IS_DELETED.isFalse());
+
+        if (request.getItemId() != null ) {
+            step.and(p.ITEM_ID.eq(request.getItemId()));
+        }
+
+        if (request.getLocationId() != null ) {
+            step.and(p.LOCATION_ID.eq(request.getLocationId()));
+        }
+
+        if (request.getFromDate() != null && request.getToDate() != null) {
+            step.and(p.DATE.between(request.getFromDate(), request.getToDate()));
+        }
+
+        Result<Record6<Integer, Integer, String, Integer, LocalDate, String>> records = step.fetch();
+
+        return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
+
     }
 
 }
