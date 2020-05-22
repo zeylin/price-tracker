@@ -2,6 +2,7 @@ package com.zeylin.pricetracker.controller;
 
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
+import com.zeylin.pricetracker.dto.PriceFilterRequest;
 import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.service.PriceService;
@@ -50,8 +51,8 @@ public class PriceController {
     }
 
     @PostMapping(value = "/filtered")
-    public void search() {
-        priceService.search();
+    public List<PriceListDto> search(@RequestBody PriceFilterRequest request) {
+        return priceService.search(request);
     }
 
     @GetMapping(value = "/dynamics")

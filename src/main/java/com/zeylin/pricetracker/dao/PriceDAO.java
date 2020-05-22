@@ -6,6 +6,7 @@ import com.zeylin.pricetracker.db.tables.Location;
 import com.zeylin.pricetracker.db.tables.Price;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
+import com.zeylin.pricetracker.dto.PriceFilterRequest;
 import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
 import com.zeylin.pricetracker.exceptions.NotFoundException;
@@ -222,6 +223,46 @@ public class PriceDAO {
         return dslContext.delete(p)
                 .where(p.ID.eq(id))
                 .execute();
+    }
+
+    /**
+     * Search prices.
+     * @param request parameters to search with
+     * @return found prices, if any
+     */
+    public List<PriceListDto> search(PriceFilterRequest request) {
+        Price p = Price.PRICE;
+        Item i = Item.ITEM;
+        Location l = Location.LOCATION;
+
+        SelectConditionStep<Record6<Integer, Integer, String, Integer, LocalDate, String>> step =
+                dslContext.select(p.ID, p.ITEM_ID, i.NAME, p.AMOUNT, p.DATE, l.NAME)
+                        .from(p)
+                        .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
+                        .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
+                        .where(p.IS_DELETED.isFalse());
+
+        if (request.getItemId() != null) {
+            step.and(p.ITEM_ID.eq(request.getItemId()));
+        }
+
+        if (request.getLocationId() != null) {
+            step.and(p.LOCATION_ID.eq(request.getLocationId()));
+        }
+
+        if (request.getFromDate() != null && request.getToDate() != null) {
+            step.and(p.DATE.between(request.getFromDate(), request.getToDate()));
+        }
+
+        if (request.getItemName() != null && !request.getItemName().isEmpty()) {
+            step.and(i.NAME.like("%" + request.getItemName() + "%"));
+        }
+
+        step.orderBy(p.ID.desc());
+
+        Result<Record6<Integer, Integer, String, Integer, LocalDate, String>> records = step.fetch();
+
+        return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
     }
 
 }
