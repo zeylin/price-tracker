@@ -11,7 +11,7 @@
 
 	<groupId>com.zeylin</groupId>
 	<artifactId>price-tracker</artifactId>
-	<version>1.14.0-SNAPSHOT</version>
+	<version>1.15.0-SNAPSHOT</version>
 	<name>price-tracker</name>
 	<description>Groceries price tracker</description>
 
@@ -67,6 +67,12 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.14.3</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
