@@ -142,28 +142,30 @@ public class PriceDAO {
     /**
      * Update price.
      * @param request request containing price info
+     * @return number of updated records; 0 if none were updated.
      */
-    public void updatePrice(UpdatePriceRequest request) {
+    public int updatePrice(UpdatePriceRequest request) {
         Price p = Price.PRICE;
 
         LocalDateTime now = LocalDateTime.now();
 
-        dslContext.update(p)
+        return dslContext.update(p)
                 .set(p.ITEM_ID, request.getItemId())
                 .set(p.AMOUNT, request.getAmount())
                 .set(p.DATE, request.getDate())
                 .set(p.LOCATION_ID, request.getLocationId())
                 .set(p.UPDATE_DATE, now)
-                .where(p.ID.eq(request.getId())).and(p.IS_DELETED.isFalse())
+                .where(p.ID.eq(request.getId())
+                        .and(p.IS_DELETED.isFalse()))
                 .execute();
     }
 
     /**
-     * Archive a price entry by setting its deleted flag to true.
+     * Delete a price by archiving it.
      * @param id ID of the price to be archived
-     * @return the number of updated records
+     * @return the number of deleted records
      */
-    public Integer archive(Integer id) {
+    public Integer delete(Integer id) {
         Price p = Price.PRICE;
 
         LocalDateTime now = LocalDateTime.now();
@@ -261,7 +263,6 @@ public class PriceDAO {
         step.orderBy(p.ID.desc());
 
         Result<Record6<Integer, Integer, String, Integer, LocalDate, String>> records = step.fetch();
-
         return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
     }
 

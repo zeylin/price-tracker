@@ -27,7 +27,6 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public PriceDto add(AddPriceRequest request) {
-
         if (request.getItemId() == null && request.getItemName() == null) {
             throw new InvalidArgumentException("Item ID cannot be null when item name is null");
         }
@@ -56,7 +55,6 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public void update(UpdatePriceRequest request) {
-
         if (request.getId() == null) {
             throw new InvalidArgumentException("ID cannot be null");
         }
@@ -83,8 +81,10 @@ public class PriceServiceImpl implements PriceService {
             request.setLocationId(locationId);
         }
 
-        priceDAO.updatePrice(request);
-
+        int updateCount = priceDAO.updatePrice(request);
+        if (updateCount == 0) {
+            throw new NotFoundException("Price not found with id: " + request.getId());
+        }
     }
 
     @Override
@@ -109,9 +109,9 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public void delete(Integer id) {
-        Integer archiveCount = priceDAO.archive(id);
+        Integer deleteCount = priceDAO.delete(id);
 
-        if (archiveCount == 0) {
+        if (deleteCount == 0) {
             throw new NotFoundException("Price could not be found with id: " + id);
         }
     }
