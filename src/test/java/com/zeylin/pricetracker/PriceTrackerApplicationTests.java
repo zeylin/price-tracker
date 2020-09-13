@@ -1,7 +1,12 @@
 package com.zeylin.pricetracker;
 
+import com.zeylin.pricetracker.dao.ItemDAO;
+import com.zeylin.pricetracker.dao.LocationDAO;
 import com.zeylin.pricetracker.dao.PriceDAO;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
+import com.zeylin.pricetracker.dto.ItemDto;
+import com.zeylin.pricetracker.dto.ItemRequest;
+import com.zeylin.pricetracker.dto.LocationDto;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
 import com.zeylin.pricetracker.dto.UpdatePriceRequest;
@@ -34,6 +39,12 @@ public class PriceTrackerApplicationTests {
 
 	@Autowired
 	protected PriceDAO priceDAO;
+
+	@Autowired
+	protected ItemDAO itemDAO;
+
+	@Autowired
+	protected LocationDAO locationDAO;
 
 	@Before
 	public void init() {
@@ -157,6 +168,23 @@ public class PriceTrackerApplicationTests {
 		request.setDate(LocalDate.now());
 		request.setCityId(1);
 		return request;
+	}
+
+	@Test
+	public void testDictionaries() {
+		ItemRequest itemRequest = new ItemRequest();
+		List<ItemDto> items = itemDAO.list(itemRequest);
+		assertThat(items.size()).isGreaterThan(0);
+
+		itemRequest.setCategoryId(9);
+		List<ItemDto> filteredItems = itemDAO.list(itemRequest);
+		assertThat(filteredItems.size()).isGreaterThan(0);
+
+		ItemDto item = filteredItems.get(0);
+		assertEquals(item.getCategoryId(), Integer.valueOf(9));
+
+		List<LocationDto> locations = locationDAO.list();
+		assertThat(locations.size()).isGreaterThan(0);
 	}
 
 }
