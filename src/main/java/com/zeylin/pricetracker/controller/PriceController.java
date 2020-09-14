@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,12 +32,12 @@ public class PriceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PriceDto add(@RequestBody AddPriceRequest request) {
+    public PriceDto add(@RequestBody @Valid AddPriceRequest request) {
         return priceService.add(request);
     }
 
     @PutMapping
-    public void update(@RequestBody UpdatePriceRequest request) {
+    public void update(@RequestBody @Valid UpdatePriceRequest request) {
         priceService.update(request);
     }
 

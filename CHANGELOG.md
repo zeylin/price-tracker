@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.17.0-SNAPSHOT] - 2020-09-14
+### Added
+- Bean validation for request DTOs
+- Custom @Valid error handler
+
 ## [1.16.0-SNAPSHOT] - 2020-09-14
 ### Added
 - Items and locations dictionaries API
