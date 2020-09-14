@@ -27,13 +27,7 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public PriceDto add(AddPriceRequest request) {
-        if (request.getItemId() == null && request.getItemName() == null) {
-            throw new InvalidArgumentException("Item ID cannot be null when item name is null");
-        }
-
-        if (request.getLocationId() == null && request.getLocationName() == null) {
-            throw new InvalidArgumentException("Location ID cannot be null when location name is null");
-        }
+        validate(request.getItemId(), request.getItemName(), request.getLocationId(), request.getLocationName());
 
         if (request.getItemId() == null && request.getItemName() != null) {
             LOGGER.info("Adding new item: {}", request.getItemName());
@@ -55,17 +49,7 @@ public class PriceServiceImpl implements PriceService {
 
     @Override
     public void update(UpdatePriceRequest request) {
-        if (request.getId() == null) {
-            throw new InvalidArgumentException("ID cannot be null");
-        }
-
-        if (request.getItemId() == null && request.getItemName() == null) {
-            throw new InvalidArgumentException("Item ID cannot be null when item name is null");
-        }
-
-        if (request.getLocationId() == null && request.getLocationName() == null) {
-            throw new InvalidArgumentException("Location ID cannot be null when location name is null");
-        }
+        validate(request.getItemId(), request.getItemName(), request.getLocationId(), request.getLocationName());
 
         if (request.getItemId() == null && request.getItemName() != null) {
             LOGGER.info("Adding new item: {}", request.getItemName());
@@ -84,6 +68,23 @@ public class PriceServiceImpl implements PriceService {
         int updateCount = priceDAO.updatePrice(request);
         if (updateCount == 0) {
             throw new NotFoundException("Price not found with id: " + request.getId());
+        }
+    }
+
+    /**
+     * Validate a price.
+     * @param itemId id of the item
+     * @param itemName name of the item
+     * @param locationId id of the location
+     * @param locationName name of the location
+     */
+    private void validate(Integer itemId, String itemName, Integer locationId, String locationName) {
+        if (itemId == null && itemName == null) {
+            throw new InvalidArgumentException("Item ID cannot be null when item name is null");
+        }
+
+        if (locationId == null && locationName == null) {
+            throw new InvalidArgumentException("Location ID cannot be null when location name is null");
         }
     }
 
