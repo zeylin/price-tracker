@@ -4,11 +4,7 @@ import com.zeylin.pricetracker.db.Sequences;
 import com.zeylin.pricetracker.db.tables.Item;
 import com.zeylin.pricetracker.db.tables.Location;
 import com.zeylin.pricetracker.db.tables.Price;
-import com.zeylin.pricetracker.dto.AddPriceRequest;
-import com.zeylin.pricetracker.dto.PriceDto;
-import com.zeylin.pricetracker.dto.PriceFilterRequest;
-import com.zeylin.pricetracker.dto.PriceListDto;
-import com.zeylin.pricetracker.dto.UpdatePriceRequest;
+import com.zeylin.pricetracker.dto.*;
 import com.zeylin.pricetracker.exceptions.NotFoundException;
 import com.zeylin.pricetracker.utils.PriceConverter;
 import org.jooq.*;
@@ -264,6 +260,28 @@ public class PriceDAO {
 
         Result<Record6<Integer, Integer, String, Integer, LocalDate, String>> records = step.fetch();
         return records.map(r -> PriceConverter.convertToPriceListDto(p, i, l, r));
+    }
+
+    /**
+     * List prices by month.
+     * @param month integer representation of a month, from 1 (January) to 12 (December)
+     * @return prices for a given month, if found
+     */
+    public List<PriceReportDto> listByMonth(Integer month) {
+        Price p = Price.PRICE;
+        Item i = Item.ITEM;
+        Location l = Location.LOCATION;
+
+        Result<Record3<String, Integer, LocalDate>> records = dslContext.select(i.NAME, p.AMOUNT, p.DATE)
+                .from(p)
+                .leftJoin(i).on(p.ITEM_ID.eq(i.ITEM_ID))
+                .leftJoin(l).on(p.LOCATION_ID.eq(l.LOCATION_ID))
+                .where(p.IS_DELETED.isFalse())
+                .and(DSL.extract(p.DATE, DatePart.MONTH).eq(month))
+                .orderBy(p.ID.desc())
+                .fetch();
+
+        return records.map(r -> PriceConverter.convertToPriceReportDto(p, i, r));
     }
 
 }
