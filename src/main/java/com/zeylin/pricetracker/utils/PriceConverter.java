@@ -7,7 +7,10 @@ import com.zeylin.pricetracker.dto.ItemDto;
 import com.zeylin.pricetracker.dto.LocationDto;
 import com.zeylin.pricetracker.dto.PriceDto;
 import com.zeylin.pricetracker.dto.PriceListDto;
+import com.zeylin.pricetracker.dto.PriceReportDto;
 import org.jooq.Record;
+
+import java.time.format.DateTimeFormatter;
 
 public class PriceConverter {
 
@@ -48,6 +51,15 @@ public class PriceConverter {
         dto.setLocationId(l.LOCATION_ID.get(r));
         dto.setName(l.NAME.get(r));
         dto.setCityId(l.CITY_ID.get(r));
+        return dto;
+    }
+
+    public static PriceReportDto convertToPriceReportDto(Price p, Item i, Record r) {
+        PriceReportDto dto = new PriceReportDto();
+        dto.setItemName(i.NAME.get(r));
+        dto.setAmount(p.AMOUNT.get(r));
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        dto.setDate(format.format(p.DATE.get(r)));
         return dto;
     }
 }
