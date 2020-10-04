@@ -49,48 +49,6 @@ public class PriceDAO {
     }
 
     /**
-     * Save an item.
-     * @param itemName item name
-     * @return ID of the saved item
-     */
-    public Integer saveItem(String itemName) {
-        Item i = Item.ITEM;
-
-        Integer itemId = dslContext.select(DSL.max(i.ITEM_ID).plus(1))
-                .from(i)
-                .fetchOne()
-                .value1();
-
-        dslContext.insertInto(i)
-                .set(i.ITEM_ID, itemId)
-                .set(i.NAME, itemName)
-                .execute();
-        return itemId;
-    }
-
-    /**
-     * Save a location.
-     * @param locationName location name
-     * @param cityId ID of the location's city
-     * @return ID of the saved location
-     */
-    public Integer saveLocation(String locationName, Integer cityId) {
-        Location l = Location.LOCATION;
-
-        Integer locationId = dslContext.select(DSL.max(l.LOCATION_ID).plus(1))
-                .from(l)
-                .fetchOne()
-                .value1();
-
-        dslContext.insertInto(l)
-                .set(l.LOCATION_ID, locationId)
-                .set(l.NAME, locationName)
-                .set(l.CITY_ID, cityId)
-                .execute();
-        return locationId;
-    }
-
-    /**
      * Load a price entry by ID.
      * @param id ID of the price entry
      * @return price entry corresponding to the ID
