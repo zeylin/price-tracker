@@ -1,5 +1,7 @@
 package com.zeylin.pricetracker.service;
 
+import com.zeylin.pricetracker.dao.ItemDAO;
+import com.zeylin.pricetracker.dao.LocationDAO;
 import com.zeylin.pricetracker.dao.PriceDAO;
 import com.zeylin.pricetracker.dto.AddPriceRequest;
 import com.zeylin.pricetracker.dto.PriceDto;
@@ -20,9 +22,13 @@ public class PriceServiceImpl implements PriceService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PriceServiceImpl.class);
 
     private final PriceDAO priceDAO;
+    private final ItemDAO itemDAO;
+    private final LocationDAO locationDAO;
 
-    public PriceServiceImpl(PriceDAO priceDAO) {
+    public PriceServiceImpl(PriceDAO priceDAO, ItemDAO itemDAO, LocationDAO locationDAO) {
         this.priceDAO = priceDAO;
+        this.itemDAO = itemDAO;
+        this.locationDAO = locationDAO;
     }
 
     @Override
@@ -32,14 +38,14 @@ public class PriceServiceImpl implements PriceService {
         if (request.getItemId() == null && request.getItemName() != null) {
             LOGGER.info("Adding new item: {}", request.getItemName());
 
-            Integer itemId = priceDAO.saveItem(request.getItemName());
+            Integer itemId = itemDAO.saveItem(request.getItemName());
             request.setItemId(itemId);
         }
 
         if (request.getLocationId() == null && request.getLocationName() != null) {
             LOGGER.info("Adding new location: {}", request.getLocationName());
 
-            Integer locationId = priceDAO.saveLocation(request.getLocationName(), request.getCityId());
+            Integer locationId = locationDAO.saveLocation(request.getLocationName(), request.getCityId());
             request.setLocationId(locationId);
         }
 
@@ -54,14 +60,14 @@ public class PriceServiceImpl implements PriceService {
         if (request.getItemId() == null && request.getItemName() != null) {
             LOGGER.info("Adding new item: {}", request.getItemName());
 
-            Integer itemId = priceDAO.saveItem(request.getItemName());
+            Integer itemId = itemDAO.saveItem(request.getItemName());
             request.setItemId(itemId);
         }
 
         if (request.getLocationId() == null && request.getLocationName() != null) {
             LOGGER.info("Adding new location: {}", request.getLocationName());
 
-            Integer locationId = priceDAO.saveLocation(request.getLocationName(), request.getCityId());
+            Integer locationId = locationDAO.saveLocation(request.getLocationName(), request.getCityId());
             request.setLocationId(locationId);
         }
 
