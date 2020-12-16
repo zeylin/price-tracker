@@ -65,25 +65,4 @@ public class PriceController {
     public void delete(@PathVariable Integer id) {
         priceService.delete(id);
     }
-
-    @GetMapping(value = "/deleted")
-    public List<PriceListDto> listDeleted() {
-        return priceService.listDeleted();
-    }
-
-    @DeleteMapping(value = "/deleted/{id}")
-    public void deletePermanently(@PathVariable Integer id) {
-        priceService.deletePermanently(id);
-    }
-
-    @PutMapping(value = "/restore/{id}")
-    public void restore(@PathVariable Integer id) {
-        priceService.restore(id);
-    }
-
-    @DeleteMapping(value = "/deleteAllPermanently")
-    public void deleteAllPermanently() {
-        priceService.deleteAllPermanently();
-    }
-
 }

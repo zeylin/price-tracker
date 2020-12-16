@@ -17,9 +17,5 @@ public interface PriceService {
     List<PriceListDto> search(PriceFilterRequest request);
     void listPriceDynamics();
     void delete(Integer id);
-    List<PriceListDto> listDeleted();
-    void deletePermanently(Integer id);
-    void restore(Integer id);
-    void deleteAllPermanently();
 
 }

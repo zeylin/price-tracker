@@ -122,32 +122,4 @@ public class PriceServiceImpl implements PriceService {
             throw new NotFoundException("Price could not be found with id: " + id);
         }
     }
-
-    @Override
-    public List<PriceListDto> listDeleted() {
-        return priceDAO.listDeleted();
-    }
-
-    @Override
-    public void deletePermanently(Integer id) {
-        int deleteCount = priceDAO.deletePermanently(id);
-
-        if (deleteCount == 0) {
-            throw new NotFoundException("Price could not be found with id: " + id);
-        }
-    }
-
-    @Override
-    public void restore(Integer id) {
-        int restoreCount = priceDAO.restore(id);
-
-        if (restoreCount == 0) {
-            throw new NotFoundException("Price could not be found with id: " + id);
-        }
-    }
-
-    @Override
-    public void deleteAllPermanently() {
-        priceDAO.deleteAllPermanently();
-    }
 }

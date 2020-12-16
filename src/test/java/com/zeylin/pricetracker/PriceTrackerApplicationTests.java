@@ -1,5 +1,6 @@
 package com.zeylin.pricetracker;
 
+import com.zeylin.pricetracker.dao.ArchiveDAO;
 import com.zeylin.pricetracker.dao.ItemDAO;
 import com.zeylin.pricetracker.dao.LocationDAO;
 import com.zeylin.pricetracker.dao.PriceDAO;
@@ -39,6 +40,9 @@ public class PriceTrackerApplicationTests {
 
 	@Autowired
 	protected PriceDAO priceDAO;
+
+	@Autowired
+	protected ArchiveDAO archiveDAO;
 
 	@Autowired
 	protected ItemDAO itemDAO;
@@ -111,7 +115,8 @@ public class PriceTrackerApplicationTests {
 	public void deletingPrice() {
 		// given
 		Integer id = priceDAO.addPrice(generateAddPriceRequest(4, 4000));
-		List<PriceListDto> deletedListBefore = priceDAO.listDeleted();
+
+		List<PriceListDto> deletedListBefore = archiveDAO.list();
 		assertThat(deletedListBefore.size()).isEqualTo(0);
 
 		List<PriceListDto> activeListBefore = priceDAO.list();
@@ -121,7 +126,7 @@ public class PriceTrackerApplicationTests {
 		priceDAO.delete(id);
 
 		// then
-		List<PriceListDto> deletedListAfter = priceDAO.listDeleted();
+		List<PriceListDto> deletedListAfter = archiveDAO.list();
 		assertThat(deletedListAfter.size()).isEqualTo(1);
 
 		List<PriceListDto> activeListAfter = priceDAO.list();
@@ -139,7 +144,7 @@ public class PriceTrackerApplicationTests {
 		assertEquals(true, priceDto.getIsDeleted());
 
 		// when
-		priceDAO.restore(id);
+		archiveDAO.restore(id);
 
 		// then
 		PriceDto dto = priceDAO.loadPrice(id);
@@ -154,7 +159,7 @@ public class PriceTrackerApplicationTests {
 		priceDAO.delete(id);
 
 		// when
-		priceDAO.deletePermanently(id);
+		archiveDAO.deletePermanently(id);
 
 		// then
 		priceDAO.loadPrice(id);
@@ -198,10 +203,10 @@ public class PriceTrackerApplicationTests {
 		priceDAO.delete(id2);
 
 		// when
-		priceDAO.deleteAllPermanently();
+		archiveDAO.deleteAll();
 
 		// then
-		assertThat(priceDAO.listDeleted().size()).isEqualTo(0);
+		assertThat(archiveDAO.list().size()).isEqualTo(0);
 		assertThat(priceDAO.list().size()).isEqualTo(1);
 	}
 

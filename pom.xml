@@ -11,7 +11,7 @@
 
 	<groupId>com.zeylin</groupId>
 	<artifactId>price-tracker</artifactId>
-	<version>1.21.0-SNAPSHOT</version>
+	<version>1.22.0-SNAPSHOT</version>
 	<name>price-tracker</name>
 	<description>Groceries price tracker</description>
 
