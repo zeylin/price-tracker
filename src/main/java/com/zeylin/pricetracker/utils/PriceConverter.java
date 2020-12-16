@@ -1,5 +1,6 @@
 package com.zeylin.pricetracker.utils;
 
+import com.zeylin.pricetracker.db.tables.Category;
 import com.zeylin.pricetracker.db.tables.Item;
 import com.zeylin.pricetracker.db.tables.Location;
 import com.zeylin.pricetracker.db.tables.Price;
@@ -60,6 +61,16 @@ public class PriceConverter {
         dto.setAmount(p.AMOUNT.get(r));
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         dto.setDate(format.format(p.DATE.get(r)));
+        return dto;
+    }
+
+    public static PriceReportDto convertToPriceReportDto(Price p, Item i, Category c, Record r) {
+        PriceReportDto dto = new PriceReportDto();
+        dto.setItemName(i.NAME.get(r));
+        dto.setAmount(p.AMOUNT.get(r));
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        dto.setDate(format.format(p.DATE.get(r)));
+        dto.setCategory(c.NAME.get(r));
         return dto;
     }
 }

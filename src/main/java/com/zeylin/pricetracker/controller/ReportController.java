@@ -26,4 +26,11 @@ public class ReportController {
         response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s.pdf\"", "REPORT_" + month + "_" + LocalDate.now().toString()));
         response.getOutputStream().write(reportService.generateMonthlyReport(month));
     }
+
+    @GetMapping(value = "/monthlyCategorised/{month}")
+    public void generateCategorisedReport(@PathVariable Integer month, HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s.pdf\"", "REPORT_" + month + "_" + LocalDate.now().toString()));
+        response.getOutputStream().write(reportService.generateCategorisedMonthlyReport(month));
+    }
 }

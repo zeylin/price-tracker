@@ -125,4 +125,51 @@ public class ReportServiceImpl implements ReportService {
         exporter.exportReport();
     }
 
+    public byte[] generateCategorisedMonthlyReport(Integer month) {
+        try {
+            try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+                printCategorisedMonthlyReportPdf(byteArrayOutputStream, month);
+                return byteArrayOutputStream.toByteArray();
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException("Can't generate pdf report", e);
+        }
+    }
+
+    private void printCategorisedMonthlyReportPdf(OutputStream outputStream, Integer month) throws IOException, JRException, URISyntaxException {
+        if (month > 12 || month < 1) {
+            throw new InvalidArgumentException("Invalid month: " + month);
+        }
+
+        List<PriceReportDto> dataSourceList = new ArrayList<>();
+        dataSourceList.add(new PriceReportDto());
+        List<PriceReportDto> dbList = priceDAO.listWithCategoriesByMonth(month);
+        dataSourceList.addAll(dbList);
+        JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dataSourceList);
+
+        HashMap<String, Object> parameters = new HashMap<>();
+        parameters.put("DataParam", itemsJRBean);
+
+        URL resource = ReportService.class.getResource("/reports/monthly_subreport.jasper");
+        File file = Paths.get(resource.toURI()).toFile();
+        parameters.put("SUBREPORT_EXPR", file.getAbsolutePath());
+
+        String monthName = Month.of(month).getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String reportDate = format.format(LocalDate.now());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode root = objectMapper.createObjectNode();
+
+        root.put("month_name", monthName);
+        root.put("report_date", reportDate);
+
+        String jsonString = root.toString();
+        JRDataSource dataSource = loadDataSource(jsonString);
+        JasperReport jasperReport = loadReport("/reports/monthly_report.jasper");
+        jasperPrint(outputStream, parameters, dataSource, jasperReport);
+    }
+
 }

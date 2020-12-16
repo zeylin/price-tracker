@@ -10,4 +10,5 @@ public class PriceReportDto {
     private String itemName;
     private Integer amount;
     private String date;
+    private String category;
 }
