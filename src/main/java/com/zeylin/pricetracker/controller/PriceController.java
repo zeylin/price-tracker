@@ -81,4 +81,9 @@ public class PriceController {
         priceService.restore(id);
     }
 
+    @DeleteMapping(value = "/deleteAllPermanently")
+    public void deleteAllPermanently() {
+        priceService.deleteAllPermanently();
+    }
+
 }

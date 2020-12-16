@@ -242,4 +242,15 @@ public class PriceDAO {
         return records.map(r -> PriceConverter.convertToPriceReportDto(p, i, r));
     }
 
+    /**
+     * Delete all prices permanently.
+     */
+    public void deleteAllPermanently() {
+        Price p = Price.PRICE;
+
+        dslContext.delete(p)
+                .where(p.IS_DELETED.isTrue())
+                .execute();
+    }
+
 }

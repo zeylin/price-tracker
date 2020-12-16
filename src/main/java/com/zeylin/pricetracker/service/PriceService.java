@@ -20,5 +20,6 @@ public interface PriceService {
     List<PriceListDto> listDeleted();
     void deletePermanently(Integer id);
     void restore(Integer id);
+    void deleteAllPermanently();
 
 }
