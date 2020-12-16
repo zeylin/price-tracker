@@ -187,4 +187,22 @@ public class PriceTrackerApplicationTests {
 		assertThat(locations.size()).isGreaterThan(0);
 	}
 
+	@Test
+	public void deleteAll() {
+		// given
+		Integer id = priceDAO.addPrice(generateAddPriceRequest(3, 6000));
+		Integer id2 = priceDAO.addPrice(generateAddPriceRequest(4, 7000));
+		priceDAO.addPrice(generateAddPriceRequest(8, 8000));
+
+		priceDAO.delete(id);
+		priceDAO.delete(id2);
+
+		// when
+		priceDAO.deleteAllPermanently();
+
+		// then
+		assertThat(priceDAO.listDeleted().size()).isEqualTo(0);
+		assertThat(priceDAO.list().size()).isEqualTo(1);
+	}
+
 }

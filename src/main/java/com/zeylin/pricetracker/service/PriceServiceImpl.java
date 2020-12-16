@@ -146,4 +146,8 @@ public class PriceServiceImpl implements PriceService {
         }
     }
 
+    @Override
+    public void deleteAllPermanently() {
+        priceDAO.deleteAllPermanently();
+    }
 }
